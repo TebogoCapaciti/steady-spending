@@ -12,6 +12,8 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { FinanceProvider } from "@/lib/finance";
+import { HabitProvider } from "@/lib/habits";
+
 import { ThemeProvider } from "@/lib/theme";
 import { AppShell } from "@/components/app-shell";
 
@@ -133,8 +135,11 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <FinanceProvider>
-          <AppShell />
+          <HabitProvider>
+            <AppShell />
+          </HabitProvider>
         </FinanceProvider>
+
       </ThemeProvider>
     </QueryClientProvider>
   );
