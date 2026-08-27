@@ -1,13 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { TrendingUp, TrendingDown, Wallet, ArrowRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { TrendingUp, TrendingDown, Wallet, ArrowRight, Flame, CalendarDays } from "lucide-react";
 import {
   useFinance,
   useMonthSummary,
   monthKey,
   formatMoney,
-  CATEGORIES,
 } from "@/lib/finance";
+import { useHabits, dayKey, shiftDay, streakOf } from "@/lib/habits";
 import { CategoryIcon, categoryLabel } from "@/components/category-icon";
+import { EmptyState } from "@/components/empty-state";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
