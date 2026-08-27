@@ -5,6 +5,8 @@ import {
   Clapperboard,
   ShoppingBag,
   HeartPulse,
+  Repeat,
+  PiggyBank,
   CircleEllipsis,
   type LucideIcon,
 } from "lucide-react";
@@ -16,6 +18,8 @@ const ICONS: Record<Category, LucideIcon> = {
   bills: FileText,
   entertainment: Clapperboard,
   shopping: ShoppingBag,
+  subscriptions: Repeat,
+  savings: PiggyBank,
   health: HeartPulse,
   other: CircleEllipsis,
 };
