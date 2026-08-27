@@ -14,8 +14,11 @@ export const CATEGORIES = [
   { id: "bills", label: "Bills" },
   { id: "entertainment", label: "Entertainment" },
   { id: "shopping", label: "Shopping" },
+  { id: "subscriptions", label: "Subscriptions" },
+  { id: "savings", label: "Savings" },
   { id: "health", label: "Health" },
   { id: "other", label: "Other" },
+
 ] as const;
 
 export type Category = (typeof CATEGORIES)[number]["id"];
@@ -63,7 +66,9 @@ function seedTransactions(): Transaction[] {
     ["Electricity", "expense", 1150, "bills", 9],
     ["Fibre internet", "expense", 899, "bills", 14],
     ["Cinema tickets", "expense", 340, "entertainment", 7],
-    ["Streaming subscriptions", "expense", 299, "entertainment", 16],
+    ["Streaming subscriptions", "expense", 299, "subscriptions", 16],
+    ["Gym membership", "expense", 650, "subscriptions", 11],
+    ["Transfer to savings", "expense", 3000, "savings", 24],
     ["New running shoes", "expense", 2200, "shopping", 18],
     ["Pharmacy", "expense", 420, "health", 20],
     ["Groceries", "expense", 1600, "food", 33],
@@ -87,8 +92,11 @@ const defaultBudgets: Budgets = {
   bills: 12000,
   entertainment: 2000,
   shopping: 3000,
+  subscriptions: 1200,
+  savings: 4000,
   health: 1000,
 };
+
 
 const STORAGE_KEY = "tide-finance-v1";
 

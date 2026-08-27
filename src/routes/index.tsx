@@ -1,13 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { TrendingUp, TrendingDown, Wallet, ArrowRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { TrendingUp, TrendingDown, Wallet, ArrowRight, Flame, CalendarDays } from "lucide-react";
 import {
   useFinance,
   useMonthSummary,
   monthKey,
   formatMoney,
-  CATEGORIES,
 } from "@/lib/finance";
+import { useHabits, dayKey, shiftDay, streakOf } from "@/lib/habits";
 import { CategoryIcon, categoryLabel } from "@/components/category-icon";
+import { EmptyState } from "@/components/empty-state";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -34,8 +37,19 @@ function lastSixMonths() {
   return months;
 }
 
+function useGreeting() {
+  const [greeting, setGreeting] = useState("Hello");
+  useEffect(() => {
+    const h = new Date().getHours();
+    setGreeting(h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening");
+  }, []);
+  return greeting;
+}
+
 function Dashboard() {
-  const { transactions, budgets } = useFinance();
+  const { transactions, budgets, hydrated } = useFinance();
+  const { habits } = useHabits();
+  const greeting = useGreeting();
   const currentMonth = monthKey(new Date());
   const { income, expenses, net, byCategory } = useMonthSummary(currentMonth);
 
@@ -58,14 +72,46 @@ function Dashboard() {
     .slice(0, 5);
   const maxCategory = Math.max(...byCategory.map((c) => c.total), 1);
 
+  // Weekly summary
+  const weekDays = Array.from({ length: 7 }, (_, i) => dayKey(shiftDay(-i)));
+  const weekSet = new Set(weekDays);
+  const weekTx = transactions.filter((t) => weekSet.has(t.date));
+  const weekSpent = weekTx.filter((t) => t.type === "expense").reduce((s, t) => s + t.amount, 0);
+  const weekIncome = weekTx.filter((t) => t.type === "income").reduce((s, t) => s + t.amount, 0);
+  const prevWeekSet = new Set(Array.from({ length: 7 }, (_, i) => dayKey(shiftDay(-(i + 7)))));
+  const prevWeekSpent = transactions
+    .filter((t) => t.type === "expense" && prevWeekSet.has(t.date))
+    .reduce((s, t) => s + t.amount, 0);
+  const weekDelta = prevWeekSpent > 0 ? (weekSpent - prevWeekSpent) / prevWeekSpent : 0;
+  const today = dayKey();
+  const habitsDoneToday = habits.filter((h) => h.done.includes(today)).length;
+  const bestStreak = habits.reduce((m, h) => Math.max(m, streakOf(h)), 0);
+  const isEmpty = hydrated && transactions.length === 0;
+
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="text-3xl font-semibold tracking-tight">Dashboard</h1>
+        <h1 className="font-display text-3xl font-semibold tracking-tight">{greeting}, Tebogo</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          {new Date().toLocaleString("en-ZA", { month: "long", year: "numeric" })} at a glance
+          Here's your {new Date().toLocaleString("en-ZA", { month: "long", year: "numeric" })} at a glance
         </p>
       </header>
+
+      {isEmpty && (
+        <EmptyState
+          title="Nothing logged yet"
+          description="Add your first income or expense and your summary, charts and budgets will fill in here."
+          action={
+            <Link
+              to="/transactions"
+              className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            >
+              Add a transaction <ArrowRight className="h-4 w-4" />
+            </Link>
+          }
+        />
+      )}
+
 
       <section className="grid gap-4 sm:grid-cols-3">
         <StatCard

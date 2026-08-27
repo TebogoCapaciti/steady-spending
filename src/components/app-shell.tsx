@@ -1,13 +1,15 @@
 import { Link, Outlet } from "@tanstack/react-router";
-import { LayoutDashboard, ArrowLeftRight, Target, Settings, Moon, Sun, Waves } from "lucide-react";
+import { LayoutDashboard, ArrowLeftRight, Target, CircleCheckBig, Settings, Moon, Sun, Waves } from "lucide-react";
 import { useTheme } from "@/lib/theme";
 
 const NAV = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/transactions", label: "Transactions", icon: ArrowLeftRight },
   { to: "/budgets", label: "Budgets", icon: Target },
+  { to: "/habits", label: "Habits", icon: CircleCheckBig },
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
+
 
 export function AppShell() {
   const { dark, toggle } = useTheme();
