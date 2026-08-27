@@ -37,11 +37,10 @@ export function monthKey(date: string | Date) {
 }
 
 export function formatMoney(amount: number) {
-  return new Intl.NumberFormat("en-ZA", {
-    style: "currency",
-    currency: "ZAR",
-    maximumFractionDigits: 0,
-  }).format(amount);
+  // Deterministic formatting so SSR and client render identical strings.
+  const rounded = Math.round(Math.abs(amount));
+  const grouped = rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return `${amount < 0 ? "−" : ""}R ${grouped}`;
 }
 
 function daysAgo(n: number) {
