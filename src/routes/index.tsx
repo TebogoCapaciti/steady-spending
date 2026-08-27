@@ -115,7 +115,7 @@ function Dashboard() {
         <h2 className="text-base font-semibold">Spending, last 6 months</h2>
         <div className="mt-6 flex h-44 items-end gap-3">
           {monthlySpending.map((m) => (
-            <div key={m.key} className="flex flex-1 flex-col items-center gap-2">
+            <div key={m.key} className="flex h-full flex-1 flex-col items-center justify-end gap-2">
               <span className="text-xs text-muted-foreground">
                 {m.total > 0 ? formatMoney(m.total) : ""}
               </span>
